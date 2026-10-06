@@ -24,4 +24,23 @@ def criar_tabela():
     conexao.close()
 
 
-criar_tabela()
+# criar_tabela()
+
+# Listar as reclamações
+def listar_reclamacoes():
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+
+    cursor.execute("SELECT * FROM ouvidoria")
+    resultado = cursor.fetchall()
+
+    if len(resultado) == 0:
+        print("Não há reclamações.")
+    else:
+        print(" ---- Reclamações atualmente ---- ")
+        for reclamacao in resultado:
+            print(f"{reclamacao[0]}. {reclamacao[1]}")
+
+    conexao.close()
+
+listar_reclamacoes()
