@@ -1,23 +1,27 @@
-import sqlite3
+import mysql.connector
 
-# cria o banco de dados .db
-def criar_banco():
-    return sqlite3.connect('ouvidoria.db')
+#conectar com o banco de dados
+def conectar_banco():
+    return mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="1212",
+        database="ouvidoria"
+    )
 
-# cria a tabela no banco local
+    conexao.close()
+
 def criar_tabela():
-    conexao = criar_banco()
-    # serve para executar comandos SQL no banco
+    conexao = conectar_banco()
     cursor = conexao.cursor()
-    # executa o comando SQL
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS reclamacoes (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            texto TEXT NOT NULL
-        )
-    ''')
-    #salva a alteração no banco
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS ouvidoria (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        texto VARCHAR(255) NOT NULL
+    )        
+    """)
     conexao.commit()
     conexao.close()
+
 
 criar_tabela()
