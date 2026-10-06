@@ -43,4 +43,22 @@ def listar_reclamacoes():
 
     conexao.close()
 
+# listar_reclamacoes()
+
+# cadastrar nova reclamação
+def cadastrar_reclamacao():
+    texto = input("Digite a reclamação: ")
+
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+    comando = "INSERT INTO ouvidoria (texto) VALUES (%s)"
+    cursor.execute(comando, (texto,))
+    conexao.commit()
+
+    print("Reclamação registrada com sucesso!")
+    conexao.close()
+
+cadastrar_reclamacao()
+listar_reclamacoes()
+cadastrar_reclamacao()
 listar_reclamacoes()
