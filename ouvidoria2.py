@@ -1,5 +1,8 @@
 import mysql.connector
 
+
+# banco de dados, cadastrar e listar reclamações
+
 #conectar com o banco de dados
 def conectar_banco():
     return mysql.connector.connect(
@@ -62,3 +65,8 @@ cadastrar_reclamacao()
 listar_reclamacoes()
 cadastrar_reclamacao()
 listar_reclamacoes()
+
+# pesquisas e quantidade de reclamações
+
+
+# editar, excluir e menu de opções
