@@ -1,4 +1,3 @@
-
 bd_ouvidoria = []
 opcao = 0
 
