@@ -98,3 +98,87 @@ def exibir_quantidade_reclamacoes():
 
 
 # editar, excluir e menu de opções
+# Opção 5 - Editar manifestação
+def editar_manifestacao():
+    codigo_editar = int(input("Digite o código da manifestação que deseja editar: "))
+
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+
+    cursor.execute("SELECT codigo FROM manifestacoes WHERE codigo = %s", (codigo_editar,))
+    if cursor.fetchone() is None:
+        print("Código não encontrado.")
+    else:
+        nova_descricao = input("Digite o novo texto da manifestação: ")
+        comando = "UPDATE manifestacoes SET descricao = %s WHERE codigo = %s"
+        cursor.execute(comando, (nova_descricao, codigo_editar))
+        conexao.commit()
+        print("Manifestação editada com sucesso!")
+
+    conexao.close()
+
+
+# Opção 6 - Excluir manifestação
+def excluir_manifestacao():
+    codigo_excluir = int(input("Digite o código da manifestação que deseja excluir: "))
+
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+
+    cursor.execute("SELECT codigo FROM manifestacoes WHERE codigo = %s", (codigo_excluir,))
+    if cursor.fetchone() is None:
+        print("Código não encontrado.")
+    else:
+        comando = "DELETE FROM manifestacoes WHERE codigo = %s"
+        cursor.execute(comando, (codigo_excluir,))
+        conexao.commit()
+        print("Manifestação excluída com sucesso!")
+
+    conexao.close()
+
+
+# Menu principal (opção 8 - Sair)
+criar_banco()
+criar_tabela()
+
+opcao = 0
+
+while opcao != 8:
+    print("\n--- SISTEMA DE OUVIDORIA (MySQL) ---")
+    print("1. Listar todas as manifestações")
+    print("2. Cadastrar nova manifestação")
+    print("3. Pesquisar por código")
+    print("4. Pesquisar por nome/termo")
+    print("5. Editar manifestação")
+    print("6. Excluir manifestação")
+    print("7. Exibir quantidade total")
+    print("8. Sair")
+
+    opcao = int(input("Escolha uma opção: "))
+
+    if opcao == 1:
+        listar_manifestacoes()
+
+    elif opcao == 2:
+        cadastrar_manifestacao()
+
+    elif opcao == 3:
+        pesquisar_por_codigo()
+
+    elif opcao == 4:
+        pesquisar_por_termo()
+
+    elif opcao == 5:
+        editar_manifestacao()
+
+    elif opcao == 6:
+        excluir_manifestacao()
+
+    elif opcao == 7:
+        exibir_quantidade()
+
+    elif opcao == 8:
+        print("Saindo do sistema de ouvidoria...")
+
+    else:
+        print("Opção inválida. Tente novamente.")
