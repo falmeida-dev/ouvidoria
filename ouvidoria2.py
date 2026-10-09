@@ -8,7 +8,7 @@ def conectar_banco():
     return mysql.connector.connect(
         host="localhost",
         user="root",
-        password="100407",
+        password="senha_banco",
         database="ouvidoria"
     )
 
@@ -62,10 +62,10 @@ def cadastrar_reclamacao():
     print("Reclamação registrada com sucesso!")
     conexao.close()
 
-cadastrar_reclamacao()
-listar_reclamacoes()
-cadastrar_reclamacao()
-listar_reclamacoes()
+# cadastrar_reclamacao()
+# listar_reclamacoes()
+# cadastrar_reclamacao()
+# listar_reclamacoes()
 
 # pesquisas de reclamações
 def pesquisar_reclamacao_por_id():
@@ -86,6 +86,23 @@ def pesquisar_reclamacao_por_id():
     except ValueError:
         print("Erro: Digite apenas números inteiros.")
 
+# pesquisar por termo
+def pesquisar_por_termo():
+    termo = input("\nDigite o termo que deseja pesquisar: ")
+
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+    cursor.execute("SELECT id, texto FROM ouvidoria WHERE texto LIKE %s", ('%' + termo + '%',))
+    resultados = cursor.fetchall()
+    conexao.close()
+
+    if resultados:
+        print(f"\nReclamações contendo '{termo}':")
+        for reclamacao in resultados:
+            print(f"{reclamacao[0]}. {reclamacao[1]}")
+    else:
+        print("Nenhuma reclamação encontrada contendo'.")
+
 #quantidade de reclamações
 def exibir_quantidade_reclamacoes():
     conexao = conectar_banco()
@@ -98,19 +115,19 @@ def exibir_quantidade_reclamacoes():
 
 
 # editar, excluir e menu de opções
-# Opção 5 - Editar manifestação
+# editar manifestação
 def editar_manifestacao():
     codigo_editar = int(input("Digite o código da manifestação que deseja editar: "))
 
     conexao = conectar_banco()
     cursor = conexao.cursor()
 
-    cursor.execute("SELECT codigo FROM manifestacoes WHERE codigo = %s", (codigo_editar,))
+    cursor.execute("SELECT id FROM ouvidoria WHERE id = %s", (codigo_editar,))
     if cursor.fetchone() is None:
         print("Código não encontrado.")
     else:
         nova_descricao = input("Digite o novo texto da manifestação: ")
-        comando = "UPDATE manifestacoes SET descricao = %s WHERE codigo = %s"
+        comando = "UPDATE ouvidoria SET texto = %s WHERE id = %s"
         cursor.execute(comando, (nova_descricao, codigo_editar))
         conexao.commit()
         print("Manifestação editada com sucesso!")
@@ -118,18 +135,18 @@ def editar_manifestacao():
     conexao.close()
 
 
-# Opção 6 - Excluir manifestação
+#excluir manifestação
 def excluir_manifestacao():
     codigo_excluir = int(input("Digite o código da manifestação que deseja excluir: "))
 
     conexao = conectar_banco()
     cursor = conexao.cursor()
 
-    cursor.execute("SELECT codigo FROM manifestacoes WHERE codigo = %s", (codigo_excluir,))
+    cursor.execute("SELECT id FROM ouvidoria WHERE id = %s", (codigo_excluir,))
     if cursor.fetchone() is None:
         print("Código não encontrado.")
     else:
-        comando = "DELETE FROM manifestacoes WHERE codigo = %s"
+        comando = "DELETE FROM ouvidoria WHERE id = %s"
         cursor.execute(comando, (codigo_excluir,))
         conexao.commit()
         print("Manifestação excluída com sucesso!")
@@ -138,7 +155,6 @@ def excluir_manifestacao():
 
 
 # Menu principal (opção 8 - Sair)
-criar_banco()
 criar_tabela()
 
 opcao = 0
@@ -157,13 +173,13 @@ while opcao != 8:
     opcao = int(input("Escolha uma opção: "))
 
     if opcao == 1:
-        listar_manifestacoes()
+        listar_reclamacoes()
 
     elif opcao == 2:
-        cadastrar_manifestacao()
+        cadastrar_reclamacao()
 
     elif opcao == 3:
-        pesquisar_por_codigo()
+        pesquisar_reclamacao_por_id()
 
     elif opcao == 4:
         pesquisar_por_termo()
@@ -175,7 +191,7 @@ while opcao != 8:
         excluir_manifestacao()
 
     elif opcao == 7:
-        exibir_quantidade()
+        exibir_quantidade_reclamacoes()
 
     elif opcao == 8:
         print("Saindo do sistema de ouvidoria...")
