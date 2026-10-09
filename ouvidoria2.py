@@ -8,7 +8,7 @@ def conectar_banco():
     return mysql.connector.connect(
         host="localhost",
         user="root",
-        password="1212",
+        password="100407",
         database="ouvidoria"
     )
 
@@ -27,7 +27,8 @@ def criar_tabela():
     conexao.close()
 
 
-# criar_tabela()
+# Chamada da função sem NENHUM espaço antes da palavra:
+criar_tabela()
 
 # Listar as reclamações
 def listar_reclamacoes():
@@ -66,7 +67,34 @@ listar_reclamacoes()
 cadastrar_reclamacao()
 listar_reclamacoes()
 
-# pesquisas e quantidade de reclamações
+# pesquisas de reclamações
+def pesquisar_reclamacao_por_id():
+    try:
+        id_busca = int(input("\nDigite o ID da reclamação: "))
+        
+        conexao = conectar_banco()
+        cursor = conexao.cursor()
+        cursor.execute("SELECT id, texto FROM ouvidoria WHERE id = %s", (id_busca,))
+        resultado = cursor.fetchone()
+        conexao.close()
+
+        if resultado:
+            print(f"Reclamação #{resultado[0]}: {resultado[1]}")
+        else:
+            print("Nenhuma reclamação encontrada com esse ID.")
+            
+    except ValueError:
+        print("Erro: Digite apenas números inteiros.")
+
+#quantidade de reclamações
+def exibir_quantidade_reclamacoes():
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+    cursor.execute("SELECT COUNT(*) FROM ouvidoria")
+    total = cursor.fetchone()[0]
+    conexao.close()
+
+    print(f"\nTotal de reclamações: {total}")
 
 
 # editar, excluir e menu de opções
